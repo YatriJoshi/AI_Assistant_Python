@@ -1,29 +1,43 @@
 import random
 
-name = input("Enter your name:")
-print("Welcome", name, "to the Assistant Program!")
 
-greetings=["hi", "hello", "hey","whats up","hii"]
-mood_questions=["how are you?", "how r you", "how are you", "how r u"]
-bye_statements=["bye", "goodbye", "see you","see ya","see you later","see you next time","never mind see you later"]
-nice_statement=["nice i like it", "nice", "i like it", "cool", "awesome","great", "good job", "well done", "amazing", "fantastic", "wonderful", "excellent", "superb", "brilliant", "outstanding", "impressive", "marvelous", "terrific", "fabulous", "incredible", "magnificent"]
-fallback_statement=["I am not sure I understood that.","Can you refrase that?","I am still learning. Try something else."]
-while True:
-    user = input("You: ").strip().lower()
+def greet_user():
+    name = input("Enter your name: ")
+    print(f"Welcome {name} to the Assistant Program!")
+    return name
 
-    if user in greetings:
-        print("Assistant: Hello!", name)
 
-    elif user in mood_questions:
-        print("Assistant: I'm learning every day!")
-     
-    elif user in nice_statement:
-        print("Assistant: Thank you!")  
-        
-    elif user in bye_statements:
-        print("Assistant: Goodbye! Have a great day!")  
-        break
+def run_assistant():
+    greetings = ["hi", "hello", "hey", "whats up"]
+    mood_questions = ["how are you", "how r you", "how r u"]
+    bye_statements = ["bye", "goodbye", "see you", "see ya"]
+    nice_statements = ["nice", "cool", "awesome", "great", "well done"]
+    fallback_statements = [
+        "I am not sure I understood that.",
+        "Can you rephrase that?",
+        "I am still learning. Try something else."
+    ]
 
-    else:
-        print("Assistant:", random.choice(fallback_statement))
+    name = greet_user()
 
+    while True:
+        user = input("You: ").strip().lower()
+
+        if user in greetings:
+            print(f"Assistant: Hello, {name}!")
+
+        elif user in mood_questions:
+            print("Assistant: I'm learning every day!")
+
+        elif user in nice_statements:
+            print("Assistant: Thank you!")
+
+        elif user in bye_statements:
+            print("Assistant: Goodbye! Have a great day!")
+            break
+
+        else:
+            print("Assistant:", random.choice(fallback_statements))
+
+
+run_assistant()
