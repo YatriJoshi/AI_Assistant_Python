@@ -1,10 +1,26 @@
 import random
 import datetime
-
+USER_FILE = "users.txt"
 
 def greet_user():
-    name = input("Enter your name: ")
-    print(f"Welcome {name} to the Assistant Program!")
+    try:
+        with open(USER_FILE, "r") as file:
+            name = file.read().strip()
+
+        if name:
+            print(f"Welcome back, {name}!")
+            return name
+
+    except FileNotFoundError:
+        pass
+
+    # If file doesn't exist or is empty
+    name = input("Enter your name: ").strip()
+
+    with open(USER_FILE, "w") as file:
+        file.write(name)
+
+    print(f"Nice to meet you, {name}!")
     return name
 
 def handle_commands(user_input):
