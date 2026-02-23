@@ -1,3 +1,4 @@
+# Building AI Assistant in Python
 import random
 import datetime
 USER_FILE = "users.txt"
@@ -55,15 +56,16 @@ def handle_commands(user_input):
     return False  
            
 def run_assistant():
-    greetings = ["hi", "hello", "hey", "whats up"]
+    greetings = ["hi", "hello", "hey", "whats up", "hii"]
     mood_questions = ["how are you", "how r you", "how r u"]
-    bye_statements = ["bye", "goodbye", "see you", "see ya"]
+    bye_statements = ["bye", "goodbye", "see you", "see ya", "see you later", "see you soon", "see u soon", "see u later"]
     nice_statements = ["nice", "cool", "awesome", "great", "well done"]
     fallback_statements = [
         "I am not sure I understood that.",
         "Can you rephrase that?",
         "I am still learning. Try something else."
     ]
+    thanks_statements = ["thank you", "thanks", "thx", "ty"]
 
     name = greet_user()
 
@@ -87,7 +89,8 @@ def run_assistant():
         elif user in bye_statements:
             print("Assistant: Goodbye! Have a great day!")
             break
-
+        elif user in thanks_statements:
+            print("Assistant: You're welcome!")
         else:
             print("Assistant:", random.choice(fallback_statements))
 
