@@ -29,31 +29,37 @@ def handle_commands(user_input):
         now = datetime.datetime.now()
         print("Assistant: The current time is", now.strftime("%H:%M:%S"))
         return True
-    
+
     elif "date" in user_input:
         today = datetime.date.today()
         print("Assistant: Today's date is", today)
         return True
-    
+
     elif user_input.startswith("add"):
         parts = user_input.split()
-        
-        if len(parts) == 3 and parts[1].isdigit() and parts[2].isdigit():
-            result = int(parts[1] + int(parts[2]))
-            print("Assistant: Result is", result)
-        else:
+
+        if len(parts) != 3:
             print("Assistant: Usage: add 5 10")
+            return True
+
+        try:
+            num1 = float(parts[1])
+            num2 = float(parts[2])
+            print("Assistant: Result is", num1 + num2)
+        except ValueError:
+            print("Assistant: Please enter numbers like: add 5 10")
+
         return True
-    
+
     elif user_input == "help":
         print("Assistant: Available commands:")
-        print("- time -> Show current time")
-        print("- date -> Show today's date")
-        print("- add <num1> <num2> -> add numbers")
-        print("-bye -> exit assistant")
+        print("- time        → show current time")
+        print("- date        → show today's date")
+        print("- add 5 10    → add two numbers")
+        print("- bye         → exit assistant")
         return True
-    
-    return False  
+
+    return False
            
 def run_assistant():
     greetings = ["hi", "hello", "hey", "whats up", "hii"]
