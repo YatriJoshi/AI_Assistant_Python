@@ -1,104 +1,107 @@
-# Building AI Assistant in Python
 import random
 import datetime
+import speech_recognition as sr
+import pyttsx3
+
+engine = pyttsx3.init()
+engine.setProperty("rate", 165)  # slower = clearer
+print("=== ASSISTANT STARTED ===")
+
+def speak_name(name):
+    # Force correct pronunciation
+    phonetic = "yaa tree"   # <- THIS is the key
+    engine.say(phonetic)
+    engine.runAndWait()
+    
+def speak(text):
+    print("Assistant:", text)
+    engine.say(text)
+    engine.runAndWait()
+
+def listen():
+    recognizer = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening...")
+        recognizer.adjust_for_ambient_noise(source, duration=0.5)
+        audio = recognizer.listen(source)
+
+    try:
+        command = recognizer.recognize_google(audio)
+        print("You:", command)
+        return command.lower()
+    except sr.UnknownValueError:
+        speak("Sorry, I did not understand.")
+        return ""
+    except sr.RequestError:
+        speak("Speech service is unavailable.")
+        return ""
+
 USER_FILE = "users.txt"
 
 def greet_user():
     try:
         with open(USER_FILE, "r") as file:
             name = file.read().strip()
-
         if name:
-            print(f"Welcome back, {name}!")
-            return name
-
+           print(f"Assistant: Welcome back, {name}")
+        engine.say("Welcome back")
+        speak_name(name)
+        return name
     except FileNotFoundError:
         pass
 
-    # If file doesn't exist or is empty
     name = input("Enter your name: ").strip()
-
     with open(USER_FILE, "w") as file:
         file.write(name)
 
-    print(f"Nice to meet you, {name}!")
+    speak(f"Nice to meet you, {name}")
     return name
 
 def handle_commands(user_input):
     if "time" in user_input:
         now = datetime.datetime.now()
-        print("Assistant: The current time is", now.strftime("%H:%M:%S"))
+        speak(f"The current time is {now.strftime('%H:%M:%S')}")
         return True
 
-    elif "date" in user_input:
+    if "date" in user_input:
         today = datetime.date.today()
-        print("Assistant: Today's date is", today)
+        speak(f"Today's date is {today}")
         return True
 
-    elif user_input.startswith("add"):
+    if user_input.startswith("add"):
         parts = user_input.split()
-
         if len(parts) != 3:
-            print("Assistant: Usage: add 5 10")
+            speak("Usage is add 5 10")
             return True
 
         try:
-            num1 = float(parts[1])
-            num2 = float(parts[2])
-            print("Assistant: Result is", num1 + num2)
+            result = float(parts[1]) + float(parts[2])
+            speak(f"Result is {result}")
         except ValueError:
-            print("Assistant: Please enter numbers like: add 5 10")
-
+            speak("Please say numbers")
         return True
 
-    elif user_input == "help":
-        print("Assistant: Available commands:")
-        print("- time        → show current time")
-        print("- date        → show today's date")
-        print("- add 5 10    → add two numbers")
-        print("- bye         → exit assistant")
+    if "help" in user_input:
+        speak("You can ask time, date, add numbers, or say bye")
         return True
 
     return False
-           
-def run_assistant():
-    greetings = ["hi", "hello", "hey", "whats up", "hii"]
-    mood_questions = ["how are you", "how r you", "how r u"]
-    bye_statements = ["bye", "goodbye", "see you", "see ya", "see you later", "see you soon", "see u soon", "see u later"]
-    nice_statements = ["nice", "cool", "awesome", "great", "well done"]
-    fallback_statements = [
-        "I am not sure I understood that.",
-        "Can you rephrase that?",
-        "I am still learning. Try something else."
-    ]
-    thanks_statements = ["thank you", "thanks", "thx", "ty"]
 
+def run_assistant():
     name = greet_user()
+    speak("Assistant is ready")
 
     while True:
-        user = input("You: ").strip().lower()
-        
-        #1.Commands
-        if handle_commands(user):
+        text = listen()
+        if not text:
             continue
-        
-        #2. Conversation flow
-        if user in greetings:
-            print(f"Assistant: Hello, {name}!")
 
-        elif user in mood_questions:
-            print("Assistant: I'm learning every day!")
-
-        elif user in nice_statements:
-            print("Assistant: Thank you!")
-
-        elif user in bye_statements:
-            print("Assistant: Goodbye! Have a great day!")
+        if "bye" in text or "exit" in text:
+            speak("Goodbye")
             break
-        elif user in thanks_statements:
-            print("Assistant: You're welcome!")
-        else:
-            print("Assistant:", random.choice(fallback_statements))
 
+        if not handle_commands(text):
+            speak("I did not understand")
 
+# 🔴 THIS LINE IS CRITICAL
 run_assistant()
